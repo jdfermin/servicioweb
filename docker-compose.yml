@@ -1,12 +1,45 @@
-﻿services:
-  webapplication2:
-    image: webapplication2
-    build:
-      context: .
-      dockerfile: WebApplication2/Dockerfile
+﻿version: '3.4'
 
-  webapplication2-1:
-    image: webapplication2-1
+networks:
+  dev:
+    driver: bridge
+
+services:
+  webapp2:
+    image: docker.io/library/webapp2
+    depends_on:
+      - "app_db"
+    container_name: webapp2-services
+    ports:
+      - "8080:80"
     build:
-      context: .
-      dockerfile: WebApplication2/Dockerfile
+      context: /
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=USER ID=postgres;Password=postgres;Server=app_db;Port=5432;Database=Directories; IntegratedSecurity=true;Pooling=true;
+      - ASPNETCORE_URLS=http://+:80
+    networks:
+      - dev
+        
+  app_db:
+    image: postgres:latest
+    container: app_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=SampleDbDrive
+    ports:
+      - 5433:5432
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - dev
+        
+volumes:
+  app_data:
+    
+
+
+    
+   
