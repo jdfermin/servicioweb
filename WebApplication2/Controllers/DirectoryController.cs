@@ -36,13 +36,12 @@ namespace WebApplication2.Controllers
                 return NotFound();
             
             var resultadosPagina = 5f;
-            var paginaCount = Math.Ceiling(dbContext.Directory.Count() / resultadosPagina);
         
             var directories = dbContext.DirectoryEmail
                 .Select(
                     d => new DirectoryDTO()
                     {
-                        id = d.id,
+                        id = d.directoryID,
                         name = d.directory.name,
                         emails = new List<string>()
                     }
@@ -112,6 +111,7 @@ namespace WebApplication2.Controllers
 
             DirectoryDTO directoryDTO = new DirectoryDTO()
             {
+                id = directory.id,
                 name = directory.name,
                 emails = emails
             };
@@ -138,6 +138,7 @@ namespace WebApplication2.Controllers
         {
             Directory directory = dbContext.Directory.Find(id);
             dbContext.Directory.Remove(directory);
+            dbContext.SaveChanges();
             return NoContent();
         }
     }

@@ -17,7 +17,7 @@ public class AppDbContext : DbContext
     {
         //conectar a postgres con string de conexion de app settings   
         base.OnConfiguring(options);
-        options.UseNpgsql("Host=db_postgres; Database=Directories; Username=postgres; Password=xperiago2001");
+        options.UseNpgsql("Host=localhost; Database=Directories; Username=postgres; Password=xperiago2001");
     }
     
     public DbSet<Directory> Directory { get; set; }

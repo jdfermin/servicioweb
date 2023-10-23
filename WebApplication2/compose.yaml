@@ -2,12 +2,12 @@
 
 
 networks:
-  mydockerapi-dev:
+  webapplication2-dev:
     driver: bridge
 
 
 services:
-  mydockerapi:
+  web:
     image: mydockerapi:latest
     depends_on:
       - "postgres_image"
