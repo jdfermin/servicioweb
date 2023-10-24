@@ -118,19 +118,68 @@ namespace WebApplication2.Controllers
 
             return Ok(directoryDTO);
         }
-        
-        [HttpPut("/directories/")]
-        public async Task<ActionResult<Directory>> PutDirectory(DirectoryDTO directoryDTO)
+
+        //PUT
+        [HttpPut("/directories/{id}")]
+        public async Task<ActionResult<Directory>> PutDirectory(DirectoryDTO directoryDTO, int id)
         {
-            Directory directory = new Directory();
-            return Ok(directory);
+            Directory directory = dbContext.Directory.FirstOrDefault(d => d.id == id);
+
+            if (directory != null)
+            {
+                directory.name = directoryDTO.name;
+                dbContext.SaveChanges();
+
+                var directoryEmailsToDelete = dbContext.DirectoryEmail.Where(de => de.directoryID == directory.id);
+                dbContext.DirectoryEmail.RemoveRange(directoryEmailsToDelete);
+
+                foreach (var em in directoryDTO.emails)
+                {
+                    Email email = new Email() { adress = em };
+                    dbContext.Email.Add(email);
+                    dbContext.SaveChanges();
+
+                    int emailID = dbContext.Email.Where(e => e.adress == em).Select(e => e.id).FirstOrDefault();
+
+                    dbContext.DirectoryEmail.Add(new DirectoryEmail() { directoryID = directory.id, emailID = emailID });
+                }
+                dbContext.SaveChanges();
+
+                return Ok(directoryDTO);
+            }
+
+            return NotFound();
         }
-        
-        [HttpPatch("/directories/")]
-        public async Task<ActionResult<Directory>> PatchDirectory(DirectoryDTO directoryDTO)
+        //PATCH
+        [HttpPatch("/directories/{id}")]
+        public async Task<ActionResult<Directory>> PatchDirectory(DirectoryDTO directoryDTO, int id)
         {
-            Directory directory = new Directory();
-            return Ok(directory);
+            Directory directory = dbContext.Directory.FirstOrDefault(d => d.id == id);
+
+            if (directory != null)
+            {
+                directory.name = directoryDTO.name;
+                dbContext.SaveChanges();
+
+                var directoryEmailsToDelete = dbContext.DirectoryEmail.Where(de => de.directoryID == directory.id);
+                dbContext.DirectoryEmail.RemoveRange(directoryEmailsToDelete);
+
+                foreach (var em in directoryDTO.emails)
+                {
+                    Email email = new Email() { adress = em };
+                    dbContext.Email.Add(email);
+                    dbContext.SaveChanges();
+
+                    int emailID = dbContext.Email.Where(e => e.adress == em).Select(e => e.id).FirstOrDefault();
+
+                    dbContext.DirectoryEmail.Add(new DirectoryEmail() { directoryID = directory.id, emailID = emailID });
+                }
+                dbContext.SaveChanges();
+
+                return Ok(directoryDTO);
+            }
+
+            return NotFound();
         }
 
         [HttpDelete("/directories/{id}")]
