@@ -10874,26 +10874,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Orianna\\.nuget\\packages\\": {}
+    "C:\\Users\\jdfer\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Orianna\\Source\\Repos\\servicioweb3\\WebApplication2\\WebApplication2.csproj",
+      "projectUniqueName": "C:\\Users\\jdfer\\RiderProjects\\WebApplication2\\WebApplication2\\WebApplication2.csproj",
       "projectName": "WebApplication2",
-      "projectPath": "C:\\Users\\Orianna\\Source\\Repos\\servicioweb3\\WebApplication2\\WebApplication2.csproj",
-      "packagesPath": "C:\\Users\\Orianna\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Orianna\\Source\\Repos\\servicioweb3\\WebApplication2\\obj\\",
+      "projectPath": "C:\\Users\\jdfer\\RiderProjects\\WebApplication2\\WebApplication2\\WebApplication2.csproj",
+      "packagesPath": "C:\\Users\\jdfer\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jdfer\\RiderProjects\\WebApplication2\\WebApplication2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Orianna\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\jdfer\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -10958,7 +10956,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
