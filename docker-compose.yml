@@ -2,7 +2,7 @@
 
 services:
   webapp2:
-    build: .
+    build: ./WebApplication2
     restart: always
     depends_on:
       - app_db
