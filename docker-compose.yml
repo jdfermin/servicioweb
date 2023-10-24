@@ -1,8 +1,4 @@
-﻿version: '3.4'
-
-networks:
-  dev:
-    driver: bridge
+﻿version: '3.9'
 
 services:
   webapp2:
@@ -11,15 +7,13 @@ services:
       - app_db
     container_name: webapp2-services
     ports:
-      - "8080:80"
+      - "8080:8080"
     build:
       context: /
       dockerfile: Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=USER ID=postgres;Password=postgres;Server=app_db;Port=5432;Database=Directories; IntegratedSecurity=true;Pooling=true;
       - ASPNETCORE_URLS=http://+:80
-    networks:
-      - dev
         
   app_db:
     image: postgres:latest
@@ -33,9 +27,6 @@ services:
     restart: always
     volumes:
       - app_data:/var/lib/postgresql/data
-    networks:
-      - dev
         
 volumes:
-  app_data:
-  
+  app_data: {}
