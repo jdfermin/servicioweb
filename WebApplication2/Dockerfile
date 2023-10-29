@@ -8,8 +8,8 @@ COPY *.csproj ./
 RUN dotnet restore
 
 COPY . ./
-ENV HTTP_PROXY http://proxylab.ucab.edu.ve:3128
-ENV HTTPS_PROXY http://proxylab.ucab.edu.ve:3128
+#ENV HTTP_PROXY http://proxylab.ucab.edu.ve:3128
+#ENV HTTPS_PROXY http://proxylab.ucab.edu.ve:3128
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS buil-env
