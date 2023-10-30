@@ -1,4 +1,5 @@
 global using WebApplication2.Data;
+using System.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,9 +8,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+var server = builder.Configuration["DatabaseServer"] ?? "";
+var port = builder.Configuration["DatabasePort"] ?? "";
+var user = builder.Configuration["DatabaseUser"] ?? "";
+var password = builder.Configuration["DatabasePassword"] ?? "";
+var database = builder.Configuration["DatabaseName"] ?? "";
+
+var connectionString = $"USER ID={user};Password={password};Server={server};Port={port};Database={database}";
+
 builder.Services.AddDbContext<AppDbContext>(
-        options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+    options => options.UseNpgsql(connectionString)
+);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
