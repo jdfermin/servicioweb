@@ -13,7 +13,7 @@ services:
       DatabasePassword: "postgres"
       DatabaseName: "directories"
     ports:
-      - "8080:80"
+      - "8080:8000"
         
   app_db:
     image: postgres:latest
