@@ -11,7 +11,7 @@ using Directory = WebApplication2.Models.Directory;
 
 namespace WebApplication2.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     public class DirectoryController : ControllerBase
     {
@@ -32,91 +32,114 @@ namespace WebApplication2.Controllers
         [HttpGet("/directories/")]
         public async Task<ActionResult<DirectoryPage>> GetDirectories(int page)
         {
-            if (!dbContext.Directory.Any())
-                return NotFound();
-            
-            var resultadosPagina = 5f;
-        
-            var directories = dbContext.DirectoryEmail
-                .Select(
-                    d => new DirectoryDTO()
-                    {
-                        id = d.directoryID,
-                        name = d.directory.name,
-                        emails = new List<string>()
-                    }
-                )
-                .Skip((page - 1) * (int) resultadosPagina)
-                .Take((int) resultadosPagina)
-                .ToList();
+            try
+            {
+                if (!dbContext.Directory.Any())
+                    return NotFound("No hay directorios registrados.");
 
-            foreach (var dir in directories)
-            {
-                List<string> emails = dbContext.DirectoryEmail
-                    .Where(d => d.directoryID == dir.id)
-                    .Select(d => d.email.adress).ToList();
-                dir.emails = emails;
+                var resultadosPagina = 5f;
+
+                var directories = dbContext.DirectoryEmail
+                    .Select(
+                        d => new DirectoryDTO()
+                        {
+                            id = d.directoryID,
+                            name = d.directory.name,
+                            emails = new List<string>()
+                        }
+                    )
+                    .Skip((page - 1) * (int)resultadosPagina)
+                    .Take((int)resultadosPagina)
+                    .ToList();
+
+                foreach (var dir in directories)
+                {
+                    List<string> emails = dbContext.DirectoryEmail
+                        .Where(d => d.directoryID == dir.id)
+                        .Select(d => d.email.adress).ToList();
+                    dir.emails = emails;
+                }
+
+                string url = "https://localhost:7158/api/directory/?page=";
+
+                DirectoryPage pagina = new DirectoryPage()
+                {
+                    count = dbContext.Directory.Count(),
+                    previous = (page > 1) ? url + ((int)page - 1) : "null",
+                    next = url + ((int)page + 1),
+                    results = directories
+                };
+                return Ok(pagina);
             }
-        
-            string url = "https://localhost:7158/api/directory/?page=";
-            
-            DirectoryPage pagina = new DirectoryPage()
+            catch (Exception exception)
             {
-                count = dbContext.Directory.Count(),
-                previous = (page>1) ? url+((int) page-1) : "null",
-                next = url+((int) page+1),
-                results = directories
-            };
-            return Ok(pagina);
+                return NotFound(exception.Message);
+            }
         }
         
         [HttpPost("/directories")]
         public async Task<ActionResult<DirectoryDTO>> CreateDirectory(CreateDirectoryRequest request)
         {
-
-            Directory directory = new Directory() { name = request.name };
-            dbContext.Directory.Add(directory);
-            dbContext.SaveChanges();
-
-            directory.id = dbContext.Directory.Where(e => e.name == request.name).Select(e => e.id).FirstOrDefault();
-
-            foreach (var em in request.emails)
+            try
             {
-                Email email = new Email() { adress = em };
+                Directory directory = new Directory() { name = request.name };
+                dbContext.Directory.Add(directory);
+                dbContext.SaveChanges();
+
+                directory.id = dbContext.Directory.Where(e => e.name == request.name).Select(e => e.id)
+                    .FirstOrDefault();
+
+                foreach (var em in request.emails)
+                {
+                    Email email = new Email() { adress = em };
                     dbContext.Email.Add(email);
                     dbContext.SaveChanges();
-                    
-                int emailID = dbContext.Email.Where(e => e.adress == em).Select(e => e.id).FirstOrDefault();
 
-                dbContext.DirectoryEmail.Add(new DirectoryEmail(){ directoryID = directory.id, emailID = emailID});
+                    int emailID = dbContext.Email.Where(e => e.adress == em).Select(e => e.id).FirstOrDefault();
+
+                    dbContext.DirectoryEmail.Add(new DirectoryEmail()
+                        { directoryID = directory.id, emailID = emailID });
+                }
+
+                dbContext.SaveChanges();
+
+                return Ok(request);
             }
-            dbContext.SaveChanges();
-
-            return Ok(request);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
         [HttpGet("/directories/{id}")]
         public async Task<ActionResult<Directory>> GetDirectoryByID(int id)
         {
-            if (!dbContext.Directory.Where(d => d.id == id).Any())
-                return NotFound();
-
-            Directory directory =
-                dbContext.Directory.Where(d => d.id == id).FirstOrDefault();
-            
-            List<string> emails =
-                dbContext.DirectoryEmail
-                    .Where(d => d.directoryID == id)
-                    .Select(d => d.email.adress).ToList();
-
-            DirectoryDTO directoryDTO = new DirectoryDTO()
+            try
             {
-                id = directory.id,
-                name = directory.name,
-                emails = emails
-            };
+                if (!dbContext.Directory.Where(d => d.id == id).Any())
+                    return NotFound("No se encuentra un directorio registrado con este ID.");
 
-            return Ok(directoryDTO);
+                Directory directory =
+                    dbContext.Directory.Where(d => d.id == id).FirstOrDefault();
+
+                List<string> emails =
+                    dbContext.DirectoryEmail
+                        .Where(d => d.directoryID == id)
+                        .Select(d => d.email.adress).ToList();
+
+                DirectoryDTO directoryDTO = new DirectoryDTO()
+                {
+                    id = directory.id,
+                    name = directory.name,
+                    emails = emails
+                };
+
+                return Ok(directoryDTO);
+            }
+            catch (Exception exception)
+            {
+                return NotFound(exception.Message);
+            }
         }
 
         //PUT
